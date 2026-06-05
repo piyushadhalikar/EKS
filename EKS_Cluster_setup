@@ -1,0 +1,114 @@
+step 1
+install AWS CLI
+create IAM user and login using access key for aws configure
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+step 1
+install AWS CLI
+create IAM user and login using access key for aws configure
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+
+step 2
+install eksctl
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+step 3
+install kubectl
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+step4
+create eks cluster
+eksctl create cluster --name=eks-cluster \
+                      --region=us-west-2 \
+                      --version=1.35 \
+                      --without-nodegroup
+
+
+step5
+Associate IAM OIDC Provider
+eksctl utils associate-iam-oidc-provider \
+    --region us-west-2 \
+    --cluster eks-cluster \
+    --approve
+
+step6
+Create Nodegroup
+eksctl create nodegroup --cluster=eks-cluster \
+                       --region=us-west-2 \
+                       --name=eks-cluster \
+                       --node-type=c7i-flex.large \
+                       --nodes=2 \
+                       --nodes-min=2 \
+                       --nodes-max=2 \
+                       --node-volume-size=29 \
+                       --ssh-access \
+                       --ssh-public-key=eks-key 
+                       
+step 7
+update context in ec2
+aws eks update-kubeconfig --region us-west-2 --name eks-cluster
+
+
+delete cluster command
+eksctl delete cluster --name=eks-cluster --region=us-west-2
+
+step 2
+install eksctl
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+step 3
+install kubectl
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+step4
+create eks cluster
+eksctl create cluster --name=eks-cluster \
+                      --region=us-west-2 \
+                      --version=1.35 \
+                      --without-nodegroup
+
+
+step5
+Associate IAM OIDC Provider
+eksctl utils associate-iam-oidc-provider \
+    --region us-west-2 \
+    --cluster eks-cluster \
+    --approve
+
+step6
+Create Nodegroup
+eksctl create nodegroup --cluster=eks-cluster \
+                       --region=us-west-2 \
+                       --name=eks-cluster \
+                       --node-type=c7i-flex.large \
+                       --nodes=2 \
+                       --nodes-min=2 \
+                       --nodes-max=2 \
+                       --node-volume-size=29 \
+                       --ssh-access \
+                       --ssh-public-key=eks-key 
+                       
+step 7
+update context in ec2
+aws eks update-kubeconfig --region us-west-2 --name eks-cluster
+
+
+delete cluster command
+eksctl delete cluster --name=eks-cluster --region=us-west-2
