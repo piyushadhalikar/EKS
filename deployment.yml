@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: nginx
+  labels:
+    app: nginx
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx-pod
+      namespace: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+#Autohealing
+if we delete a pod it will create new pod to maintain desired state
+kubectl get pods -n nginx
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-5f6dbf5c7f-287wp   1/1     Running   0          20s
+nginx-deployment-5f6dbf5c7f-b5qxb   1/1     Running   0          20s
+nginx-deployment-5f6dbf5c7f-dxhnw   1/1     Running   0          20s
+nginx-deployment-5f6dbf5c7f-nf7gs   1/1     Running   0          20s
+nginx-deployment-5f6dbf5c7f-stvpj   1/1     Running   0          20s
+
+ubuntu@ip-172-31-37-184:~$ kubectl  delete pod nginx-deployment-5f6dbf5c7f-287wp -n nginx
+pod "nginx-deployment-5f6dbf5c7f-287wp" deleted
+
+ubuntu@ip-172-31-37-184:~$ kubectl get pods -n nginx
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-5f6dbf5c7f-b5qxb   1/1     Running   0          94s
+nginx-deployment-5f6dbf5c7f-dxhnw   1/1     Running   0          94s
+nginx-deployment-5f6dbf5c7f-g7dcn   1/1     Running   0          6s
+nginx-deployment-5f6dbf5c7f-nf7gs   1/1     Running   0          94s
+nginx-deployment-5f6dbf5c7f-stvpj   1/1     Running   0          94s
