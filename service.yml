@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: nginx
+  labels:
+    app: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80  #service port
+      targetPort: 80 #pod/deployment port
+  type: LoadBalancer
+
+#external IP to access application
+kubectl get service -n nginx
+NAME            TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)        AGE
+nginx-service   LoadBalancer   10.100.1.161   a4feefef412e8462eb0b3b314af37910-1311348959.us-west-2.elb.amazonaws.com   80:30624/TCP   98s
